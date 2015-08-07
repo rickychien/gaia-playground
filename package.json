@@ -1,0 +1,26 @@
+{
+  "name": "gaia-playground",
+  "version": "0.0.1",
+  "author": "Ricky Chien [:rickychien] <rchien@mozilla.com>",
+  "description": "Gaia playground",
+  "dependencies": {
+    "calendar": "file:./apps/calendar"
+  },
+  "devDependencies": {
+    "yagbs": "*"
+  },
+  "engines": {
+    "node": ">=0.12",
+    "npm": ">=2"
+  },
+  "license": "MIT",
+  "readme": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rickychien/gaia-playground.git"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/yagbs --exclude apps,shared,tools",
+    "clean": "rm -rf .ninja_* build-config-cache.json build.ninja node_modules/calendar/build_stage"
+  }
+}
