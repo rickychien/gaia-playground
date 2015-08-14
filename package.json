@@ -7,7 +7,10 @@
     "calendar": "file:./apps/calendar"
   },
   "devDependencies": {
-    "yagbs": "*"
+    "argparse": "^1.0.2",
+    "cfg-manager": "^1.1.0",
+    "child-process-promise": "^1.1.0",
+    "confidant": "^0.5.0"
   },
   "engines": {
     "node": ">=0.12",
@@ -20,7 +23,7 @@
     "url": "git+https://github.com/rickychien/gaia-playground.git"
   },
   "scripts": {
-    "build": "./node_modules/.bin/yagbs --exclude apps,shared,tools",
+    "build": "./build.js --exclude apps,shared,tools",
     "clean": "rm -rf .ninja_* build-config-cache.json build.ninja node_modules/calendar/build_stage"
   }
 }
