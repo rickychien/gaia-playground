@@ -48,14 +48,15 @@ function configuring(cachePath, mergedConfig, confidantOpt) {
 }
 
 function building(dir) {
+  console.log('Building with ninja...')
   return new Promise(function(resolve, reject) {
     spawn('ninja', { cwd: dir })
       .progress(function (childProcess) {
         childProcess.stdout.on('data', function (data) {
-            console.log('[Ninja]', data.toString());
+            console.log(data.toString());
         });
         childProcess.stderr.on('data', function (data) {
-            console.log('[Ninja]', data.toString());
+            console.log(data.toString());
         });
       })
       .then(function() {
@@ -94,7 +95,7 @@ module.exports = function main(args) {
   }
 
   cfg
-    .env()
+    .env(Object.keys(cfg._config))
     .config({
       ARGUMENT_DIR: dir,
       ARGUMENT_EXCLUDE: exclude,
