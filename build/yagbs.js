@@ -2,7 +2,7 @@ var fs = require('fs');
 var confidant = require('confidant');
 var cfg = require('cfg-manager');
 var ArgumentParser = require('argparse').ArgumentParser ;
-var exec = require('child-process-promise').exec;
+var spawn = require('child-process-promise').spawn;
 
 var CWD_PATH = process.cwd();
 
@@ -37,11 +37,30 @@ function hasNewerConfig(cachePath, mergedConfig) {
   return JSON.stringify(cache) !== JSON.stringify(mergedConfig);
 }
 
+function configuring(cachePath, mergedConfig, confidantOpt) {
+  if (hasNewerConfig(cachePath, mergedConfig)) {
+    console.log('Configuring...');
+    return confidant(confidantOpt);
+  } else {
+    console.log('Skip configuring...');
+    return Promise.resolve();
+  }
+}
+
 function building(dir) {
   return new Promise(function(resolve, reject) {
-    exec('ninja', { cwd: dir })
-      .then(function(result) {
-        resolve(result);
+    spawn('ninja', { cwd: dir })
+      .progress(function (childProcess) {
+        childProcess.stdout.on('data', function (data) {
+            console.log('[Ninja]', data.toString());
+        });
+        childProcess.stderr.on('data', function (data) {
+            console.log('[Ninja]', data.toString());
+        });
+      })
+      .then(function() {
+        console.log('Building with ninja fininsh.');
+        resolve();
       })
       .fail(function(err) {
         console.error(err);
@@ -84,8 +103,7 @@ module.exports = function main(args) {
 
   var mergedConfig = cfg._config;
 
-  return (hasNewerConfig(cachePath, mergedConfig) ?
-    confidant({ dir: dir, exclude: exclude }) : Promise.resolve())
+  return configuring(cachePath, mergedConfig, { dir: dir, exclude: exclude })
     .then(function() {
       return building(dir);
     })
